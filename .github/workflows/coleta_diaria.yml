@@ -1,0 +1,33 @@
+name: Coleta Diária de Preços
+
+on:
+  schedule:
+    - cron: '0 11 * * *'   # Todo dia às 08:00 horário de Brasília (UTC-3 = 11:00 UTC)
+  workflow_dispatch:        # Permite rodar manualmente pelo GitHub
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Rodar coleta de preços
+        run: python coletor.py
+
+      - name: Commitar banco atualizado
+        run: |
+          git config --global user.name  'PriceRadar Bot'
+          git config --global user.email 'bot@priceradar.com'
+          git add priceradar.db
+          git diff --cached --quiet || git commit -m "chore: coleta diária $(date +'%Y-%m-%d')"
+          git push
