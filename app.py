@@ -40,7 +40,7 @@ st.markdown("""
 #Conexão com o banco
 @st.cache_resource
 def get_connection():
-    conn = sqlite3.connect(r"C:\Users\jessi\OneDrive\Área de Trabalho\pr\priceradar.db", check_same_thread=False)
+    conn = sqlite3.connect("priceradar.db", check_same_thread=False)
     conn.row_factory = sqlite3.Row
     return conn
 
